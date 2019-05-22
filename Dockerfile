@@ -1,4 +1,3 @@
-FROM leitwolf/azure-functions-puppeteer:latest
+FROM estruyf/azure-function-node-puppeteer
 
-ENV AzureWebJobsScriptRoot=/home/site/wwwroot
 COPY . /home/site/wwwroot
