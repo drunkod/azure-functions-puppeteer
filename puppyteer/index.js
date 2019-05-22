@@ -1,16 +1,31 @@
-module.exports = async function (context, req) {
-    context.log('JavaScript HTTP trigger function processed a request.');
+const os = require("os");
+const puppeteer = require("puppeteer");
+const fs = require("fs");
 
-    if (req.query.name || (req.body && req.body.name)) {
-        context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: "Hello " + (req.query.name || req.body.name)
-        };
-    }
-    else {
-        context.res = {
-            status: 400,
-            body: "Please pass a name on the query string or in the request body"
-        };
-    }
+module.exports = async function(context, req) {
+  let tempDir = os.tmpdir();
+  let tempFile = `${tempDir}/temp.pdf`;
+
+  await (async () => {
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    });
+    const page = await browser.newPage();
+    await page.goto("https://blog.leitwolf.io", { waitUntil: "networkidle2" });
+    await page.pdf({ path: tempFile, format: "A4" });
+
+    await browser.close();
+
+    var data = fs.readFileSync(tempFile);
+
+    context.res = {
+      isRaw: true,
+      body: data
+    };
+    context.done();
+  })();
+  //   context.res = {
+  //     // status: 200, /* Defaults to 200 */
+  //     body: `Page title: ${pageTitle}`
+  //   };
 };
