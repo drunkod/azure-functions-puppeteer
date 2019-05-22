@@ -9,8 +9,7 @@ module.exports = async function(context, req) {
   } else {
     context.res = {
       status: 400,
-      body:
-        "Please  jhbhjb pass a name on the query string or in  kjkjthe request body"
+      body: "Please the query string or in  kjkjthe request body"
     };
   }
 };
